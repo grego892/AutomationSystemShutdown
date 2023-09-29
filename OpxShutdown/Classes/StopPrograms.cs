@@ -1,5 +1,4 @@
-﻿using OpxShutdown;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -10,13 +9,13 @@ using System.Threading.Tasks;
 
 
 
-namespace OpxShutdown
+namespace OpxShutdown.Classes
 {
-    internal class ProgramStop
+    internal class StopPrograms
     {
         public static void StopProgramsAll()
         {
-            foreach (string program in ProgramList.OpxPrograms)
+            foreach (string program in ListPrograms.OpxPrograms)
             {
                 StopSingleProgram(program);
             }
@@ -38,15 +37,13 @@ namespace OpxShutdown
                         p.Dispose();
                         p.Refresh();
                     }
-
-                    //Process.GetProcessesByName(program)[0].CloseMainWindow();
-                    //Process.GetProcessesByName(program)[0].Dispose();
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-            
+
         }
     }
 }

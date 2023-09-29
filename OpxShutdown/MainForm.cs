@@ -1,5 +1,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
+using System.Reflection;
+using System.Windows.Forms;
+using OpxShutdown.Classes;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+
 
 namespace OpxShutdown
 {
@@ -11,103 +17,90 @@ namespace OpxShutdown
         }
         private void MainForm_Load(object sender, EventArgs e)
         {
-            ProgramStatusCheck.ProgramCheck();
+            StatusCheckPrograms.ProgramCheck();
             UpdateUI();
         }
         private void RefreshBtn_Click(object sender, EventArgs e)
         {
-            ProgramStatusCheck.ProgramCheck();
+            StatusCheckPrograms.ProgramCheck();
             UpdateUI();
         }
 
         public void UpdateUI()
         {
-            VCAutoDubChk.Checked = ProgramList.VCAutoDub;
-            MusicSyncChk.Checked = ProgramList.MusicSync;
-            RunLogsUploadChk.Checked = ProgramList.RunLogsUpload;
-            TransferConvertChk.Checked = ProgramList.TransferConvert;
-            DeviceServerChk.Checked = ProgramList.DeviceServer;
-            FtpServerChk.Checked = ProgramList.FtpServer;
-            FileServerChk.Checked = ProgramList.FileServer;
-            RepeatersTxt.Text = ProgramList.Repeater.ToString();
-        }
-
-        private async void ShutdownAllBtn_Click(object sender, EventArgs e)
-        {
-            ProgramStop.StopProgramsAll();
-
-            Task.Delay(5000);
-
-            ProgramStatusCheck.ProgramCheck();
-            UpdateUI();
+            VCAutoDubChk.Checked = ListPrograms.VCAutoDub;
+            MusicSyncChk.Checked = ListPrograms.MusicSync;
+            RunLogsUploadChk.Checked = ListPrograms.RunLogsUpload;
+            TransferConvertChk.Checked = ListPrograms.TransferConvert;
+            DeviceServerChk.Checked = ListPrograms.DeviceServer;
+            FtpServerChk.Checked = ListPrograms.FtpServer;
+            FileServerChk.Checked = ListPrograms.FileServer;
+            RepeatersTxt.Text = ListPrograms.Repeater.ToString();
         }
 
         private async void VCAutoDubBtn_Click(object sender, EventArgs e)
         {
-            ProgramStop.StopSingleProgram("VCAutoDub");
+            StopPrograms.StopSingleProgram("VCAutoDub");
 
             await Task.Delay(5000);
 
-            ProgramStatusCheck.ProgramCheck();
+            StatusCheckPrograms.ProgramCheck();
             UpdateUI();
-            //ProgramStatusCheck.ProgramCheck();
-            //UpdateUI();
-
         }
 
         private void MusicSyncBtn_Click(object sender, EventArgs e)
         {
-            ProgramStop.StopSingleProgram("MusicSync");
+            StopPrograms.StopSingleProgram("MusicSync");
 
-            ProgramStatusCheck.ProgramCheck();
+            StatusCheckPrograms.ProgramCheck();
             UpdateUI();
         }
 
         private void RunLogsUploadBtn_Click(object sender, EventArgs e)
         {
-            ProgramStop.StopSingleProgram("RunLogsUpload");
+            StopPrograms.StopSingleProgram("RunLogsUpload");
 
-            ProgramStatusCheck.ProgramCheck();
+            StatusCheckPrograms.ProgramCheck();
             UpdateUI();
         }
 
         private void TransferConvertBtn_Click(object sender, EventArgs e)
         {
-            ProgramStop.StopSingleProgram("TransferConvert");
+            StopPrograms.StopSingleProgram("TransferConvert");
 
-            ProgramStatusCheck.ProgramCheck();
+            StatusCheckPrograms.ProgramCheck();
             UpdateUI();
         }
-
         private void DeviceServerBtn_Click(object sender, EventArgs e)
         {
-            ProgramStop.StopSingleProgram("DeviceServer");
+            StopPrograms.StopSingleProgram("DeviceServer");
 
-            ProgramStatusCheck.ProgramCheck();
+            StatusCheckPrograms.ProgramCheck();
             UpdateUI();
         }
+        private void FuturiLDRBtn_Click(object sender, EventArgs e)
+        {
+            while (Process.GetProcessesByName("FuturiLDR").Length > 0)
+            {
+                StopPrograms.StopSingleProgram("FuturiLDR");
+            }
 
+            StatusCheckPrograms.ProgramCheck();
+            UpdateUI();
+        }
         private void FtpServerBtn_Click(object sender, EventArgs e)
         {
-            ProgramStop.StopSingleProgram("FtpServer");
+            StopPrograms.StopSingleProgram("FtpServer");
 
-            ProgramStatusCheck.ProgramCheck();
+            StatusCheckPrograms.ProgramCheck();
             UpdateUI();
         }
 
         private void FileServerBtn_Click(object sender, EventArgs e)
         {
-            ProgramStop.StopSingleProgram("FileServer");
+            StopPrograms.StopSingleProgram("FileServer");
 
-            ProgramStatusCheck.ProgramCheck();
-            UpdateUI();
-        }
-
-        private void RepeatersSingleBtn_Click(object sender, EventArgs e)
-        {
-            ProgramStop.StopSingleProgram("Repeater");
-
-            ProgramStatusCheck.ProgramCheck();
+            StatusCheckPrograms.ProgramCheck();
             UpdateUI();
         }
 
@@ -115,11 +108,55 @@ namespace OpxShutdown
         {
             while (Process.GetProcessesByName("Repeater").Length > 0)
             {
-                ProgramStop.StopSingleProgram("Repeater");
+                StopPrograms.StopSingleProgram("Repeater");
             }
 
-            ProgramStatusCheck.ProgramCheck();
+            StatusCheckPrograms.ProgramCheck();
             UpdateUI();
+        }
+
+        private void OpxStartupBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (File.Exists("C:\\Program Files (x86)\\Broadcast Software International\\OpX\\StartUp.exe"))
+                {
+                    Process.Start($"C:\\Program Files (x86)\\Broadcast Software International\\OpX\\StartUp.exe");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        private async void ShutdownAllBtn_Click(object sender, EventArgs e)
+        {
+            StopPrograms.StopProgramsAll();
+
+            Task.Delay(5000);
+
+            StatusCheckPrograms.ProgramCheck();
+            UpdateUI();
+        }
+
+        private void AboutBtn_Click(object sender, EventArgs e)
+        {
+            Version v = Assembly.GetExecutingAssembly().GetName().Version;
+            string About = string.Format(CultureInfo.InvariantCulture, @"v{0}.{1}.{2}", v.Major, v.Minor, v.Build, v.Revision);
+
+            MessageBox.Show(About, "About", MessageBoxButtons.OK);
+        }
+
+        private void RebootBtn_Click(object sender, EventArgs e)
+        {
+            DialogResult confirmResult = MessageBox.Show("Are you sure to REBOOT THIS SERVER ??", "Confirm Reboot!!", MessageBoxButtons.YesNo);
+
+                if (confirmResult == DialogResult.Yes)
+                {
+                    Process.Start("shutdown.exe", "-r -t 0");
+                }
+                else
+                {}
         }
     }
 }

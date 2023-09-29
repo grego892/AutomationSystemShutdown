@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace OpxShutdown
 {
     internal static class Program

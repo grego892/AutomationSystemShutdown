@@ -7,17 +7,18 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <ApplicationIcon>RVXferStop.ico</ApplicationIcon>
+    <ApplicationIcon>Icons\RVXferStop.ico</ApplicationIcon>
     <PackageIcon>Stop-red-icon.png</PackageIcon>
 	<PublishSingleFile>true</PublishSingleFile>
+	<Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="RVXferStop.ico" />
+    <Content Include="Icons\RVXferStop.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="K:\Icons\Stop-red-icon.png">
+    <None Include="K:\Icons\Stop-red-icon.png" Link="Icons\Stop-red-icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
